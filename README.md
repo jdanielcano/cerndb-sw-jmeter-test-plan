@@ -15,20 +15,20 @@ The aim of this document is not to describe how to install JMeter, but in the [o
 
 Every configuration explained here about JMeter refers to the folder where the JMeter is installed. The files named here are those to configure JMeter using Kerberos authentication.
 
-1. **jaas.conf** file. Update the parameter **useKeyTab** to allow the use of KeyTab files.
+* **jaas.conf** file. Update the parameter **useKeyTab** to allow the use of KeyTab files.
 ``` 
 useKeyTab=true 
 ```
-2. **httpclient.parameters** file. Uncomment or add the following line to allow JMeter to use the pre-emptive authentication in httpClient mode. Using this kind of authentication, HttpClient will send the basic authentication response even before the server gives an unauthorized response in certain situations, thus reducing the overhead of making the connection.
+* **httpclient.parameters** file. Uncomment or add the following line to allow JMeter to use the pre-emptive authentication in httpClient mode. Using this kind of authentication, HttpClient will send the basic authentication response even before the server gives an unauthorized response in certain situations, thus reducing the overhead of making the connection.
 ```
 http.authentication.preemptive$Boolean=true
 ```
-3. **system.properties** file. Uncomment or add the following lines to show JMeter which files use for Kerberos authentication and as JAAS file. In this case we can use directly the Kerberos file available in **/etc/krb5.conf** or copy the content of this file into the Kerberos file available in the JMeter bin folder and named as well krb5.conf.
+* **system.properties** file. Uncomment or add the following lines to show JMeter which files use for Kerberos authentication and as JAAS file. In this case we can use directly the Kerberos file available in **/etc/krb5.conf** or copy the content of this file into the Kerberos file available in the JMeter bin folder and named as well krb5.conf.
 ```
 java.security.krb5.conf=/usr/local/bin/jmeter/bin/krb5.conf
 java.security.auth.login.config=/usr/local/bin/jmeter/bin/jaas.conf
 ```
-4. **krb5.conf** file. If we decide to use the one located in the JMeter bin folder, comment all the content of the file and copy the content of the file **/etc/krb5.conf**. It will be like this:
+* **krb5.conf** file. If we decide to use the one located in the JMeter bin folder, comment all the content of the file and copy the content of the file **/etc/krb5.conf**. It will be like this:
 ```
 [libdefaults]
 default_realm = CERN.CH
@@ -55,14 +55,12 @@ proxiable = true
  cern.ch= CERN.CH
  .cern.ch = CERN.CH
 ```
-
-5. **user.properties** file. This file is used to log all the information about SSL connections, it is not mandatory, but it is advisable to add this parameters in order to record every event in case of problems.
+* **user.properties** file. This file is used to log all the information about SSL connections, it is not mandatory, but it is advisable to add this parameters in order to record every event in case of problems.
 ```
 log_level.jmeter.util.HttpSSLProtocolSocketFactory=DEBUG
 log_level.jmeter.util.JsseSSLManager=DEBUG
 ```
-
-6. **jmeter.properties** file. In this file just check if you are using the proper configuration files.
+* **jmeter.properties** file. In this file just check if you are using the proper configuration files.
 ```
 httpclient.parameters.file=httpclient.parameters
 user.properties=user.properties
