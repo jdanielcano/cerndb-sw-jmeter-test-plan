@@ -16,32 +16,20 @@ The aim of this document is not to describe how to install JMeter, but in the [o
 Every configuration explained here about JMeter refers to the folder where the JMeter is installed. The files named here are those to configure JMeter using Kerberos authentication.
 
 1. **jaas.conf** file. Update the parameter **useKeyTab** to allow the use of KeyTab files.
-
-''' 
+``` 
 useKeyTab=true 
-
-'''
-
+```
 2. **httpclient.parameters** file. Uncomment or add the following line to allow JMeter to use the pre-emptive authentication in httpClient mode. Using this kind of authentication, HttpClient will send the basic authentication response even before the server gives an unauthorized response in certain situations, thus reducing the overhead of making the connection.
-
-'''
+```
 http.authentication.preemptive$Boolean=true
-
-'''
-
+```
 3. **system.properties** file. Uncomment or add the following lines to show JMeter which files use for Kerberos authentication and as JAAS file. In this case we can use directly the Kerberos file available in **/etc/krb5.conf** or copy the content of this file into the Kerberos file available in the JMeter bin folder and named as well krb5.conf.
-
-'''
-
+```
 java.security.krb5.conf=/usr/local/bin/jmeter/bin/krb5.conf
 java.security.auth.login.config=/usr/local/bin/jmeter/bin/jaas.conf
-
-'''
-
+```
 4. **krb5.conf** file. If we decide to use the one located in the JMeter bin folder, comment all the content of the file and copy the content of the file **/etc/krb5.conf**. It will be like this:
-
-'''
-
+```
 [libdefaults]
 default_realm = CERN.CH
 ticket_lifetime = 25h
@@ -66,36 +54,27 @@ proxiable = true
 [domain_realm]
  cern.ch= CERN.CH
  .cern.ch = CERN.CH
-
-'''
+```
 
 5. **user.properties** file. This file is used to log all the information about SSL connections, it is not mandatory, but it is advisable to add this parameters in order to record every event in case of problems.
-
-'''
-
+```
 log_level.jmeter.util.HttpSSLProtocolSocketFactory=DEBUG
 log_level.jmeter.util.JsseSSLManager=DEBUG
-
-'''
+```
 
 6. **jmeter.properties** file. In this file just check if you are using the proper configuration files.
-
-''' 
-
+```
 httpclient.parameters.file=httpclient.parameters
 user.properties=user.properties
 system.properties=system.properties
-
-'''
+```
 
 ### JMeter. Kerberos configuration.
 
 Once the pre-configuration is ready, is time to open the JMeter application and to configure it to use Kerberos. The steps to take are the following:
 
 1. Add a new **Thread Group**. On the **Test Plan**, right-click and select **Add**, **Threads (Users)** and click on **Thread Group**.
-
 2. Add inside the Thread Group an element to control the cookies. On the **Thread Group**, right-click and select **Add**, **Config Element** and click on **HTTP Cookie Manager**. Keep the default configuration.
-
 3. Add inside the Thread Group an element to control the Kerberos Authentication. On the **Thread Group**, right-click and select **Add**, **Config Element** and click on **HTTP Authorization Manager**. Change the configuration of this element.
   *   Select the element **HTTP Authorization Manager**.
   *   Push the button **Add**.
@@ -118,7 +97,6 @@ In a test plan in which we want to use Kerberos authentication for an Apache HTT
 
 1. The authentication using Kerberos is going to be negotiate just the first time each user access to the test web page, so is needed to add a controller to execute the authentication just once.
   *   Add inside the Thread Group an element to control the cookies. On the **Thread Group**, right-click and select **Add**, **Logic Controller** and click on **Once Only Controller**. Keep the default configuration.
-
 2. Add into the **Once Only Controller** the following configuration elements:
   *   To authenticate, a first access to the Kerberos authentication web page is needed. Add inside the Once Only Controller an HTTP request element to test a web page. On the **Once Only Controller**, right-click and select **Add**, **Sampler** and click on **HTTP Request**. Add the following configuration:
     *   Name: Add an intuitive name.
@@ -154,12 +132,12 @@ In a test plan in which we want to use Kerberos authentication for an Apache HTT
     *   Path: /Shibboleth.sso/ADFS
     *   Check the options: **Follow Redirects**, **Use KeepAlive** and **Browser-compatible headers**.
     *   Parameters to add:
+
         | Name | Value | Encode | Include Equals |
         | ---- |:-----:| :----: | :------------: |
 	| wa   | wsignin1.0 | yes | yes |
 	| wresult | ${variable} | yes | yes |
     *   All the rest keep the default values.
-
 3. Add into the **Thread Group**, outside **Once Only Controller**, a new **Sampler** - **HTTP Request** with the final web page to test with the following configuration elements:
   *   Access to the web page to test with the following configuration:
     *   Name: Add an intuitive name.
@@ -171,7 +149,6 @@ In a test plan in which we want to use Kerberos authentication for an Apache HTT
     *   Path: /mytestweb/path-to-test.
     *   Check the options: **Redirect Automatically**, **Use KeeepAlive**, **Use multipart/for-data for POST** and **Browser-compatible headers**.
     *   All the rest keep the default values.
-
 4. For reporting, statistics and status of the services purpose, it is advisable to add the following listening tools:
   *   View Result Tree. Right-click on the **Thread Group**, select **Add**, **Listener** and click on **View Result Tree**.
   *   Graph Results. Right-click on the **Thread Group**, select **Add**, **Listener** and click on **Graph Results**.
