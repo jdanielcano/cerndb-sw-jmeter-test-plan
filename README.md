@@ -19,24 +19,29 @@ Every configuration explained here about JMeter refers to the folder where the J
 
 ''' 
 useKeyTab=true 
+
 '''
 
 2. **httpclient.parameters** file. Uncomment or add the following line to allow JMeter to use the pre-emptive authentication in httpClient mode. Using this kind of authentication, HttpClient will send the basic authentication response even before the server gives an unauthorized response in certain situations, thus reducing the overhead of making the connection.
 
 '''
 http.authentication.preemptive$Boolean=true
+
 '''
 
 3. **system.properties** file. Uncomment or add the following lines to show JMeter which files use for Kerberos authentication and as JAAS file. In this case we can use directly the Kerberos file available in **/etc/krb5.conf** or copy the content of this file into the Kerberos file available in the JMeter bin folder and named as well krb5.conf.
 
 '''
+
 java.security.krb5.conf=/usr/local/bin/jmeter/bin/krb5.conf
 java.security.auth.login.config=/usr/local/bin/jmeter/bin/jaas.conf
+
 '''
 
 4. **krb5.conf** file. If we decide to use the one located in the JMeter bin folder, comment all the content of the file and copy the content of the file **/etc/krb5.conf**. It will be like this:
 
 '''
+
 [libdefaults]
 default_realm = CERN.CH
 ticket_lifetime = 25h
@@ -46,36 +51,41 @@ proxiable = true
 
 [realms]
  CERN.CH = {
-   default_domain = cern.ch
-     kpasswd_server = cerndc.cern.ch
-       admin_server = cerndc.cern.ch
-         kdc = cerndc.cern.ch
+ default_domain = cern.ch
+ kpasswd_server = cerndc.cern.ch
+ admin_server = cerndc.cern.ch
+ kdc = cerndc.cern.ch
+ 
+ v4_name_convert = {
+   host = {
+     rcmd = host
+          }
+   }
+ }
 
-	   v4_name_convert = {
-	        host = {
-		         rcmd = host
-			             }
-				       }
-				       }
+[domain_realm]
+ cern.ch= CERN.CH
+ .cern.ch = CERN.CH
 
-				       [domain_realm]
-				       cern.ch= CERN.CH
-				       .cern.ch = CERN.CH
-				       </pre>
 '''
+
 5. **user.properties** file. This file is used to log all the information about SSL connections, it is not mandatory, but it is advisable to add this parameters in order to record every event in case of problems.
 
 '''
+
 log_level.jmeter.util.HttpSSLProtocolSocketFactory=DEBUG
 log_level.jmeter.util.JsseSSLManager=DEBUG
+
 '''
 
 6. **jmeter.properties** file. In this file just check if you are using the proper configuration files.
 
 ''' 
+
 httpclient.parameters.file=httpclient.parameters
 user.properties=user.properties
 system.properties=system.properties
+
 '''
 
 ### JMeter. Kerberos configuration.
@@ -182,9 +192,7 @@ Once the configuration is ready, it is time to run the test plan, deciding previ
   *   Number of Threads (users): The maximum number of users you want to run.
   *   Ramp-Up Period (in seconds): Defines how long it takes for JMeter to ramp up from zero users to X number of threads.
   *   Loop Count: Defines how many times you want each user to run your script.
-
 As example, the servers we are testing, have a maximum of 256 number of connections allowed, so, to make a test and to check how our application will response to an DOS attack, we define Number of Threads to 500 (users), Ramp Up to 100 (seconds) and Loop Count to 500, our test will start off with zero users and will add 5 users every second, so after 100 seconds we will have a total of 500 users running our script. That is 250000 requests to the web page in around 30 minutes, really short time frame.
-
 2. Push the button "Play" or in the menu select "Run" --> "Start".
 
 ### JMeter. Checking the results of a Test Plan.
@@ -197,4 +205,4 @@ Any improvement is always welcome.
 ## Links.
 
 * [Apache JMeter Official Documentation](http://jmeter.apache.org/usermanual/index.html)
-* [Apache JMeter Official Documentation](http://jmeter.apache.org/usermanual/get-started.html)
+* [Apache JMeter Get Started Official Documentation](http://jmeter.apache.org/usermanual/get-started.html)
